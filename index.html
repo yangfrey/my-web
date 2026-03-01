@@ -1,94 +1,533 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <title>带数据库的留言板</title>
-  <style>
-    body { max-width: 600px; margin: 30px auto; padding: 0 20px; font-family: Arial; }
-    .login, .main { display: none; }
-    .show { display: block; }
-    input, button { width: 100%; padding: 10px; margin: 6px 0; box-sizing: border-box; }
-    .msg { background: #f2f2f2; padding: 10px; margin: 8px 0; border-radius: 8px; }
-    .name { font-weight: bold; color: #0066cc; }
-    .time { font-size: 12px; color: #666; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习社区</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .success {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .post-section {
+            margin-top: 30px;
+        }
+        
+        .post-form {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .post {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .post-id {
+            font-size: 12px;
+            color: #999;
+            margin-right: 10px;
+        }
+        
+        .post-author {
+            font-weight: bold;
+            color: #333;
+            margin-right: 10px;
+        }
+        
+        .post-time {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .post-content {
+            line-height: 1.5;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 10px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background-color: #f5f5f5;
+            color: #333;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+        }
+        
+        .tab-button:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
 </head>
 <body>
-  <div class="login show" id="login">
-    <h3>请登录</h3>
-    <!-- 昵称默认填充123456，也可以手动改 -->
-    <input id="username" placeholder="输入昵称" value="123456">
-    <input id="password" type="password" placeholder="访问密码" value="123456">
-    <button onclick="login()">进入</button>
-  </div>
-
-  <div class="main" id="main">
-    <h3>公共留言板</h3>
-    <div id="msgList"></div>
-    <input id="content" placeholder="写留言...">
-    <button onclick="sendMsg()">发送</button>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    // 暂时保留占位符，你拿到Supabase信息后替换即可
-    const SUPABASE_URL = "https://xxxxxx.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
-
-    const PAGE_PASSWORD = "123456"; // 访问密码固定为123456
-    let currentUser = "";
-
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // 登录
-    function login() {
-      let user = document.getElementById("username").value.trim();
-      let pwd = document.getElementById("password").value.trim();
-      if (!user || pwd !== PAGE_PASSWORD) {
-        alert("昵称不能为空或密码错误");
-        return;
-      }
-      currentUser = user;
-      document.getElementById("login").classList.remove("show");
-      document.getElementById("main").classList.add("show");
-      loadMsg();
-    }
-
-    // 发送留言到数据库
-    async function sendMsg() {
-      let content = document.getElementById("content").value.trim();
-      if (!content) return;
-
-      await supabase.from("messages").insert([{
-        username: currentUser,
-        content: content
-      }]);
-
-      document.getElementById("content").value = "";
-      loadMsg();
-    }
-
-    // 从数据库加载所有留言
-    async function loadMsg() {
-      // 加个容错，避免没接数据库时报错
-      try {
-        let { data } = await supabase
-          .from("messages")
-          .select("*")
-          .order("created_at", { ascending: false });
-        if (data) {
-          document.getElementById("msgList").innerHTML = data.map(m => `
-            <div class="msg">
-              <div class="name">${m.username}</div>
-              <div>${m.content}</div>
-              <div class="time">${new Date(m.created_at).toLocaleString()}</div>
+    <div class="container">
+        <h1>学习社区</h1>
+        
+        <!-- 登录表单 -->
+        <div id="login-section" class="login-form">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <button onclick="showLoginForm()" class="tab-button" id="login-tab">登录</button>
+                <button onclick="showRegisterForm()" class="tab-button" id="register-tab">注册</button>
             </div>
-          `).join("");
+            
+            <!-- 登录表单 -->
+            <div id="login-form-content">
+                <h3>登录</h3>
+                <div id="login-message" class="message hidden"></div>
+                <div class="form-group">
+                    <label for="login-username">用户名:</label>
+                    <input type="text" id="login-username" placeholder="请输入用户名">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">密码:</label>
+                    <input type="password" id="login-password" placeholder="请输入密码">
+                </div>
+                <button onclick="login()">登录</button>
+            </div>
+            
+            <!-- 注册表单 -->
+            <div id="register-form-content" class="hidden">
+                <h3>注册</h3>
+                <div id="register-message" class="message hidden"></div>
+                <div class="form-group">
+                    <label for="register-username">用户名:</label>
+                    <input type="text" id="register-username" placeholder="请输入用户名">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">密码:</label>
+                    <input type="password" id="register-password" placeholder="请输入密码">
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">确认密码:</label>
+                    <input type="password" id="register-confirm-password" placeholder="请确认密码">
+                </div>
+                <button onclick="register()">注册</button>
+            </div>
+        </div>
+        
+        <!-- 登录后区域 -->
+        <div id="post-section" class="post-section hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <button onclick="showBrowseCenter()" class="tab-button">浏览中心</button>
+                    <button onclick="showPostCenter()" class="tab-button">发布中心</button>
+                </div>
+                <button onclick="logout()" style="background-color: #f44336;">退出登录</button>
+            </div>
+            
+            <!-- Coze聊天功能 -->
+            <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.19/libs/cn/index.js"></script>
+            <script>
+              new CozeWebSDK.WebChatClient({
+                /**
+                * Agent or app settings
+                * for agent
+                * @param config.bot_id - Agent ID.
+                * for app
+                * @param config.type - To integrate a Coze app, you must set the value to app.
+                * @param config.isIframe - Whether to use the iframe method to open the chat box
+                * @param config.appInfo.appId - AI app ID.
+                * @param config.appInfo.workflowId - Workflow or chatflow ID.
+                */
+                config: {
+                  type: 'bot',
+                  bot_id: '7602506639781920794',
+                  isIframe: false,
+                },
+                /**
+                * The auth property is used to configure the authentication method.
+                * @param type - Authentication method, default type is 'unauth', which means no authentication is required; it is recommended to set it to 'token', which means authentication is done through PAT (Personal Access Token) or OAuth.
+                * @param token - When the type is set to 'token', you need to configure the PAT (Personal Access Token) or OAuth access key.
+                * @param onRefreshToken - When the access key expires, a new key can be set as needed.
+                */
+                auth: {
+                  type: 'token',
+                  token: 'cztei_lVc6v94xik8Xu65NWZQLOFydI794h8Ol4zUJI7aS0Ke5WNAnWffhj4YxZV8KeCn9l',
+                  onRefreshToken: async () => 'token'
+                },
+                /**
+                * The userInfo parameter is used to set the display of agent user information in the chat box.
+                * @param userInfo.id - ID of the agent user.
+                * @param userInfo.url - URL address of the user's avatar.
+                * @param userInfo.nickname - Nickname of the agent user.
+                */
+                userInfo: {
+                  id: 'user',
+                  url: 'https://lf-coze-web-cdn.coze.cn/obj/eden-cn/lm-lgvj/ljhwZthlaukjlkulzlp/coze/coze-logo.png',
+                  nickname: 'User',
+                },
+                ui: {
+                  /**
+                  * The ui.base parameter is used to add the overall UI effect of the chat window.
+                  * @param base.icon - Application icon URL.
+                  * @param base.layout - Layout style of the agent chat box window, which can be set as 'pc' or'mobile'.
+                  * @param base.lang - System language of the agent, which can be set as 'en' or 'zh-CN'.
+                  * @param base.zIndex - The z-index of the chat box.
+                  */
+                  base: {
+                    icon: 'https://lf-coze-web-cdn.coze.cn/obj/eden-cn/lm-lgvj/ljhwZthlaukjlkulzlp/coze/chatsdk-logo.png',
+                    layout: 'pc',
+                    lang: 'en',
+                    zIndex: 1000
+                  },
+                  /**
+                  * Controls whether to display the top title bar and the close button
+                  * @param header.isShow - Whether to display the top title bar.
+                  * @param header.isNeedClose - Whether to display the close button.
+                  */
+                  header: {
+                    isShow: true,
+                    isNeedClose: true,
+                  },
+                  /**
+                  * Controls whether to display the floating ball at the bottom right corner of the page.
+                  */
+                  asstBtn: {
+                    isNeed: true
+                  },
+                  /**
+                  * The ui.footer parameter is used to add the footer of the chat window.
+                  * @param footer.isShow - Whether to display the bottom copy module.
+                  * @param footer.expressionText - The text information displayed at the bottom.
+                  * @param footer.linkvars - The link copy and link address in the footer.
+                  */
+                  footer: {
+                    isShow: true,
+                    expressionText: 'Powered by ...',
+                  },
+                  /**
+                  * Control the UI and basic capabilities of the chat box.
+                  * @param chatBot.title - The title of the chatbox
+                  * @param chatBot.uploadable - Whether file uploading is supported.
+                  * @param chatBot.width - The width of the agent window on PC is measured in px, default is 460.
+                  * @param chatBot.el - Container for setting the placement of the chat box (Element).
+                  */
+                  chatBot: {
+                    title: 'Coze Bot',
+                    uploadable: true,
+                    width: 390,
+                  },
+                },
+              });
+            </script>
+            
+            <!-- 浏览中心 -->
+            <div id="browse-center">
+                <h2>浏览中心</h2>
+                <div id="posts-container"></div>
+            </div>
+            
+            <!-- 发布中心 -->
+            <div id="post-center" class="hidden">
+                <h2>发布中心</h2>
+                <div class="post-form">
+                    <textarea id="post-content" placeholder="请输入您的帖子内容"></textarea>
+                    <br>
+                    <button onclick="createPost()">发布帖子</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 初始化本地存储
+        function initLocalStorage() {
+            if (!localStorage.getItem('posts')) {
+                localStorage.setItem('posts', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('users')) {
+                // 初始化默认测试账号
+                localStorage.setItem('users', JSON.stringify([{username: '123456', password: '123456'}]));
+            }
         }
-      } catch (e) {
-        document.getElementById("msgList").innerHTML = "<p>暂未连接数据库，留言功能暂不可用</p>";
-      }
-    }
-  </script>
+        
+        // 显示登录表单
+        function showLoginForm() {
+            document.getElementById('login-form-content').classList.remove('hidden');
+            document.getElementById('register-form-content').classList.add('hidden');
+        }
+        
+        // 显示注册表单
+        function showRegisterForm() {
+            document.getElementById('login-form-content').classList.add('hidden');
+            document.getElementById('register-form-content').classList.remove('hidden');
+        }
+        
+        // 显示浏览中心
+        function showBrowseCenter() {
+            document.getElementById('browse-center').classList.remove('hidden');
+            document.getElementById('post-center').classList.add('hidden');
+        }
+        
+        // 显示发布中心
+        function showPostCenter() {
+            document.getElementById('browse-center').classList.add('hidden');
+            document.getElementById('post-center').classList.remove('hidden');
+        }
+        
+        let currentUser = null;
+        
+        // 登录功能
+        function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const message = document.getElementById('login-message');
+            
+            // 获取用户数据
+            const users = JSON.parse(localStorage.getItem('users'));
+            
+            // 验证用户
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = user.username;
+                message.textContent = '登录成功！';
+                message.className = 'message success';
+                message.classList.remove('hidden');
+                
+                // 显示发帖区域，隐藏登录区域
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('post-section').classList.remove('hidden');
+                
+                // 加载帖子
+                loadPosts();
+            } else {
+                message.textContent = '用户名或密码错误！';
+                message.className = 'message error';
+                message.classList.remove('hidden');
+            }
+        }
+        
+        // 注册功能
+        function register() {
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const message = document.getElementById('register-message');
+            
+            // 验证输入
+            if (!username || !password) {
+                message.textContent = '用户名和密码不能为空！';
+                message.className = 'message error';
+                message.classList.remove('hidden');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                message.textContent = '两次输入的密码不一致！';
+                message.className = 'message error';
+                message.classList.remove('hidden');
+                return;
+            }
+            
+            // 获取用户数据
+            const users = JSON.parse(localStorage.getItem('users'));
+            
+            // 检查用户名是否已存在
+            if (users.some(u => u.username === username)) {
+                message.textContent = '用户名已存在！';
+                message.className = 'message error';
+                message.classList.remove('hidden');
+                return;
+            }
+            
+            // 添加新用户
+            users.push({username, password});
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            message.textContent = '注册成功！请登录';
+            message.className = 'message success';
+            message.classList.remove('hidden');
+            
+            // 切换到登录表单
+            setTimeout(showLoginForm, 1500);
+        }
+        
+        // 创建帖子
+        function createPost() {
+            const content = document.getElementById('post-content').value;
+            
+            if (content.trim() === '') {
+                alert('请输入帖子内容！');
+                return;
+            }
+            
+            // 获取现有帖子
+            const posts = JSON.parse(localStorage.getItem('posts'));
+            
+            // 创建新帖子
+            const newPost = {
+                id: Date.now(),
+                author: currentUser,
+                content: content,
+                time: new Date().toLocaleString()
+            };
+            
+            // 添加到帖子列表
+            posts.unshift(newPost);
+            
+            // 保存到本地存储
+            localStorage.setItem('posts', JSON.stringify(posts));
+            
+            // 清空输入框
+            document.getElementById('post-content').value = '';
+            
+            // 重新加载帖子
+            loadPosts();
+            
+            // 切换回浏览中心
+            showBrowseCenter();
+        }
+        
+        // 加载帖子
+        function loadPosts() {
+            const posts = JSON.parse(localStorage.getItem('posts'));
+            const container = document.getElementById('posts-container');
+            
+            // 清空容器
+            container.innerHTML = '';
+            
+            // 渲染帖子
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <span class="post-id">ID: ${post.id}</span>
+                        <span class="post-author">用户: ${post.author}</span>
+                        <span class="post-time">${post.time}</span>
+                    </div>
+                    <div class="post-content">${post.content}</div>
+                `;
+                container.appendChild(postElement);
+            });
+        }
+        
+        // 退出登录
+        function logout() {
+            currentUser = null;
+            // 显示登录区域，隐藏发帖区域
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('post-section').classList.add('hidden');
+            
+            // 清空登录表单
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('login-message').classList.add('hidden');
+        }
+        
+        // 页面加载时初始化
+        window.onload = function() {
+            initLocalStorage();
+        };
+    </script>
 </body>
 </html>
