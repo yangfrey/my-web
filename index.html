@@ -503,6 +503,9 @@
         let isAdmin = false;
         let allUsersData = [];
 
+        // API基础地址 - 你的服务器IP
+        const API_BASE = 'http://106.54.7.163:3000';
+
         // ==================== 界面切换 ====================
         
         function showLoginForm() {
@@ -610,7 +613,7 @@
             }
             
             try {
-                const response = await fetch('http://106.54.7.163:3000/api/login', {
+                const response = await fetch(`${API_BASE}/api/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
@@ -663,7 +666,7 @@
             }
             
             try {
-                const response = await fetch('http://106.54.7.163:3000/api/register', {
+                const response = await fetch(`${API_BASE}/api/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
@@ -706,7 +709,7 @@
             container.innerHTML = '<p style="text-align:center; color:#666;">加载中...</p>';
             
             try {
-                const response = await fetch('http://106.54.7.163:3000/api/posts');
+                const response = await fetch(`${API_BASE}/api/posts`);
                 const posts = await response.json();
                 
                 if (posts.length === 0) {
@@ -752,7 +755,7 @@
             }
             
             try {
-                const response = await fetch('http://106.54.7.163:3000/api/posts', {
+                const response = await fetch(`${API_BASE}/api/posts`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ author: currentUser, content })
@@ -775,7 +778,7 @@
             if (!isAdmin || !confirm('确定要删除这个帖子吗？')) return;
             
             try {
-                const response = await fetch(`http://106.54.7.163:3000/api/posts/${postId}`, {
+                const response = await fetch(`${API_BASE}/api/posts/${postId}`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ adminUsername: currentUser })
@@ -823,7 +826,7 @@
             }
             
             try {
-                const response = await fetch('http://106.54.7.163:3000/api/user/change-password', {
+                const response = await fetch(`${API_BASE}/api/user/change-password`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -852,7 +855,7 @@
             if (!isAdmin || !confirm(`确定要封禁用户 ${username} 吗？`)) return;
             
             try {
-                const response = await fetch('http://106.54.7.163:3000/api/users/ban', {
+                const response = await fetch(`${API_BASE}/api/users/ban`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -873,7 +876,7 @@
             if (!isAdmin || !confirm(`确定要解除封禁用户 ${username} 吗？`)) return;
             
             try {
-                const response = await fetch('http://106.54.7.163:3000/api/users/unban', {
+                const response = await fetch(`${API_BASE}/api/users/unban`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -892,7 +895,7 @@
         
         async function getUsers() {
             try {
-                const response = await fetch(`http://106.54.7.163:3000/api/admin/users?adminUsername=${currentUser}`);
+                const response = await fetch(`${API_BASE}/api/admin/users?adminUsername=${currentUser}`);
                 return await response.json();
             } catch (error) {
                 return [];
@@ -977,7 +980,7 @@
         
         async function getUserDetail(username) {
             try {
-                const response = await fetch(`http://106.54.7.163:3000/api/admin/users/${username}?adminUsername=${currentUser}`);
+                const response = await fetch(`${API_BASE}/api/admin/users/${username}?adminUsername=${currentUser}`);
                 return await response.json();
             } catch (error) {
                 return null;
