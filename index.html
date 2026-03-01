@@ -1,65 +1,94 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<title>留言板</title>
-<style>
-  body{max-width:500px;margin:30px auto}
-  input,button{width:100%;margin:5px 0;padding:8px}
-  .msg{background:#f5f5f5;padding:10px;margin:5px 0}
-</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>带数据库的留言板</title>
+  <style>
+    body { max-width: 600px; margin: 30px auto; padding: 0 20px; font-family: Arial; }
+    .login, .main { display: none; }
+    .show { display: block; }
+    input, button { width: 100%; padding: 10px; margin: 6px 0; box-sizing: border-box; }
+    .msg { background: #f2f2f2; padding: 10px; margin: 8px 0; border-radius: 8px; }
+    .name { font-weight: bold; color: #0066cc; }
+    .time { font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="login show" id="login">
+    <h3>请登录</h3>
+    <!-- 昵称默认填充123456，也可以手动改 -->
+    <input id="username" placeholder="输入昵称" value="123456">
+    <input id="password" type="password" placeholder="访问密码" value="123456">
+    <button onclick="login()">进入</button>
+  </div>
 
-<div id="login">
-  <input id="user" placeholder="1234">
-  <input id="pwd" type="password" placeholder="1234">
-  <button onclick="login()">进入</button>
-</div>
+  <div class="main" id="main">
+    <h3>公共留言板</h3>
+    <div id="msgList"></div>
+    <input id="content" placeholder="写留言...">
+    <button onclick="sendMsg()">发送</button>
+  </div>
 
-<div id="board" style="display:none">
-  <div id="list"></div>
-  <input id="text" placeholder="写留言">
-  <button onclick="send()">发送</button>
-</div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // 暂时保留占位符，你拿到Supabase信息后替换即可
+    const SUPABASE_URL = "https://xxxxxx.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 
-<script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4/dist/av-min.js"></script>
-<script>
-// ========== 换成你自己的 ==========
-const APP_ID = '你的AppID'
-const APP_KEY = '你的AppKey'
-const PASS = '123456' // 网页密码
-// =================================
+    const PAGE_PASSWORD = "123456"; // 访问密码固定为123456
+    let currentUser = "";
 
-AV.init({ appId: APP_ID, appKey: APP_KEY })
-const Msg = AV.Object.extend('Msg')
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let username = ''
+    // 登录
+    function login() {
+      let user = document.getElementById("username").value.trim();
+      let pwd = document.getElementById("password").value.trim();
+      if (!user || pwd !== PAGE_PASSWORD) {
+        alert("昵称不能为空或密码错误");
+        return;
+      }
+      currentUser = user;
+      document.getElementById("login").classList.remove("show");
+      document.getElementById("main").classList.add("show");
+      loadMsg();
+    }
 
-function login() {
-  let u = document.getElementById('user').value
-  let p = document.getElementById('pwd').value
-  if (!u || p !== PASS) return alert('密码错误')
-  username = u
-  document.getElementById('login').style.display = 'none'
-  document.getElementById('board').style.display = 'block'
-  load()
-}
+    // 发送留言到数据库
+    async function sendMsg() {
+      let content = document.getElementById("content").value.trim();
+      if (!content) return;
 
-async function send() {
-  let text = document.getElementById('text').value
-  if (!text) return
-  let msg = new Msg()
-  msg.set('user', username)
-  msg.set('text', text)
-  await msg.save()
-  document.getElementById('text').value = ''
-  load()
-}
+      await supabase.from("messages").insert([{
+        username: currentUser,
+        content: content
+      }]);
 
-async function load() {
-  let { results } = await new AV.Query(Msg).descending('createdAt').find()
-  document.getElementById('list').innerHTML = results.map(m => `
-    <div class="msg">
-      <div>${m.get('user')}</div>
-      <div>${m.get('text')}</div>
-    </div>
-  `).join('')
-}
-</script>
+      document.getElementById("content").value = "";
+      loadMsg();
+    }
+
+    // 从数据库加载所有留言
+    async function loadMsg() {
+      // 加个容错，避免没接数据库时报错
+      try {
+        let { data } = await supabase
+          .from("messages")
+          .select("*")
+          .order("created_at", { ascending: false });
+        if (data) {
+          document.getElementById("msgList").innerHTML = data.map(m => `
+            <div class="msg">
+              <div class="name">${m.username}</div>
+              <div>${m.content}</div>
+              <div class="time">${new Date(m.created_at).toLocaleString()}</div>
+            </div>
+          `).join("");
+        }
+      } catch (e) {
+        document.getElementById("msgList").innerHTML = "<p>暂未连接数据库，留言功能暂不可用</p>";
+      }
+    }
+  </script>
+</body>
+</html>
