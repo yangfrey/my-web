@@ -32,6 +32,13 @@
             margin-bottom: 30px;
         }
         
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        
         .login-form {
             max-width: 400px;
             margin: 0 auto 30px;
@@ -48,15 +55,30 @@
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            color: #555;
         }
         
         input[type="text"],
-        input[type="password"] {
+        input[type="password"],
+        textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
         }
         
         button {
@@ -67,10 +89,32 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            margin-right: 5px;
+            transition: background-color 0.3s;
         }
         
         button:hover {
             background-color: #45a049;
+        }
+        
+        button.danger {
+            background-color: #f44336;
+        }
+        
+        button.danger:hover {
+            background-color: #d32f2f;
+        }
+        
+        button.success {
+            background-color: #4CAF50;
+        }
+        
+        button.warning {
+            background-color: #ff9800;
+        }
+        
+        button.info {
+            background-color: #2196F3;
         }
         
         .message {
@@ -82,11 +126,13 @@
         .error {
             background-color: #ffebee;
             color: #c62828;
+            border-left: 4px solid #f44336;
         }
         
         .success {
             background-color: #e8f5e8;
             color: #2e7d32;
+            border-left: 4px solid #4CAF50;
         }
         
         .post-section {
@@ -98,16 +144,7 @@
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
-        }
-        
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            resize: vertical;
-            min-height: 100px;
+            background-color: #f9f9f9;
         }
         
         .post {
@@ -116,6 +153,11 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             background-color: #f9f9f9;
+            transition: box-shadow 0.3s;
+        }
+        
+        .post:hover {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
         .post-header {
@@ -124,18 +166,18 @@
             align-items: center;
             margin-bottom: 10px;
             flex-wrap: wrap;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
         }
         
         .post-id {
             font-size: 12px;
             color: #999;
-            margin-right: 10px;
         }
         
         .post-author {
             font-weight: bold;
             color: #333;
-            margin-right: 10px;
         }
         
         .post-time {
@@ -144,26 +186,180 @@
         }
         
         .post-content {
-            line-height: 1.5;
+            line-height: 1.6;
+            color: #444;
+            white-space: pre-wrap;
+        }
+        
+        .post-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .post-actions button {
+            padding: 5px 10px;
+            font-size: 14px;
         }
         
         .hidden {
-            display: none;
+            display: none !important;
         }
         
         .tab-button {
-            flex: 1;
-            padding: 10px;
-            margin: 0 5px;
+            padding: 10px 15px;
+            margin: 0 2px;
             border: 1px solid #ddd;
             background-color: #f5f5f5;
             color: #333;
-            border-radius: 4px 4px 0 0;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 14px;
         }
         
         .tab-button:hover {
             background-color: #e0e0e0;
+        }
+        
+        .tab-button.active {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+        
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4CAF50;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-admin {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-banned {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .status-normal {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons button {
+            padding: 5px 10px;
+            font-size: 13px;
+        }
+        
+        .stats-card {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+        }
+        
+        @media (max-width: 600px) {
+            .nav-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-buttons {
+                justify-content: center;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            td, th {
+                padding: 8px 5px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -171,320 +367,660 @@
     <div class="container">
         <h1>学习社区</h1>
         
-        <!-- 登录表单 -->
+        <!-- 登录/注册区域 -->
         <div id="login-section" class="login-form">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <button onclick="showLoginForm()" class="tab-button" id="login-tab">登录</button>
-                <button onclick="showRegisterForm()" class="tab-button" id="register-tab">注册</button>
+            <div style="display: flex; margin-bottom: 20px;">
+                <button onclick="showLoginForm()" id="login-tab" class="tab-button" style="flex:1;">登录</button>
+                <button onclick="showRegisterForm()" id="register-tab" class="tab-button" style="flex:1;">注册</button>
             </div>
             
             <!-- 登录表单 -->
             <div id="login-form-content">
-                <h3>登录</h3>
+                <h3 style="margin-bottom: 20px;">欢迎登录</h3>
                 <div id="login-message" class="message hidden"></div>
                 <div class="form-group">
-                    <label for="login-username">用户名:</label>
-                    <input type="text" id="login-username" placeholder="请输入用户名">
+                    <label for="login-username">用户名</label>
+                    <input type="text" id="login-username" placeholder="请输入用户名" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label for="login-password">密码:</label>
+                    <label for="login-password">密码</label>
                     <input type="password" id="login-password" placeholder="请输入密码">
                 </div>
-                <button onclick="login()">登录</button>
+                <button onclick="login()" style="width:100%;">登录</button>
             </div>
             
             <!-- 注册表单 -->
             <div id="register-form-content" class="hidden">
-                <h3>注册</h3>
+                <h3 style="margin-bottom: 20px;">注册新账号</h3>
                 <div id="register-message" class="message hidden"></div>
                 <div class="form-group">
-                    <label for="register-username">用户名:</label>
-                    <input type="text" id="register-username" placeholder="请输入用户名">
+                    <label for="register-username">用户名</label>
+                    <input type="text" id="register-username" placeholder="请输入用户名" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label for="register-password">密码:</label>
+                    <label for="register-password">密码</label>
                     <input type="password" id="register-password" placeholder="请输入密码">
                 </div>
                 <div class="form-group">
-                    <label for="register-confirm-password">确认密码:</label>
+                    <label for="register-confirm-password">确认密码</label>
                     <input type="password" id="register-confirm-password" placeholder="请确认密码">
                 </div>
-                <button onclick="register()">注册</button>
+                <button onclick="register()" style="width:100%;">注册</button>
             </div>
         </div>
         
-        <!-- 登录后区域 -->
+        <!-- 登录后主区域 -->
         <div id="post-section" class="post-section hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <div>
-                    <button onclick="showBrowseCenter()" class="tab-button">浏览中心</button>
-                    <button onclick="showPostCenter()" class="tab-button">发布中心</button>
+            <div class="nav-bar">
+                <div class="nav-buttons">
+                    <button onclick="showBrowseCenter()" id="browse-tab" class="tab-button active">浏览中心</button>
+                    <button onclick="showPostCenter()" id="post-tab" class="tab-button">发布中心</button>
+                    <button onclick="showChangePassword()" id="password-tab" class="tab-button">修改密码</button>
+                    <button id="user-management-tab" onclick="showUserManagement()" class="tab-button hidden">用户管理</button>
                 </div>
-                <button onclick="logout()" style="background-color: #f44336;">退出登录</button>
+                <div>
+                    <span id="welcome-user" style="margin-right: 10px; color: #666;"></span>
+                    <button onclick="logout()" class="danger">退出</button>
+                </div>
             </div>
-            
-            <!-- Coze聊天功能 -->
-            <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.19/libs/cn/index.js"></script>
-            <script>
-              // 封装获取Token的函数（调用后端接口）
-              async function getCozeToken() {
-                try {
-                  const res = await fetch('/api/get-coze-token', {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
-                  });
-                  const data = await res.json();
-                  // 后端接口需返回格式：{ "token": "你的PAT令牌" }
-                  return data.token;
-                } catch (err) {
-                  console.error('获取初始Token失败：', err);
-                  // 兜底：测试阶段可临时返回你的令牌，上线后删除
-                  return 'pat_IROuxCbkTLqmWx4M5pS4FI1PoK53Aqd1Ji5FP1PbBk51fAD3VhxAkJlVHkWvCcqS';
-                }
-              }
-              
-              // 初始化SDK（需异步获取Token）
-              (async function() {
-                const token = await getCozeToken();
-                new CozeWebSDK.WebChatClient({
-                  config: {
-                    bot_id: '7602506639781920794',
-                  },
-                  componentProps: {
-                    title: 'Coze',
-                  },
-                  auth: {
-                    type: 'token',
-                    token: token,
-                    onRefreshToken: async function () {
-                      try {
-                        // 调用后端刷新Token的接口
-                        const res = await fetch('/api/refresh-coze-token', {
-                          method: 'GET',
-                          headers: { 'Content-Type': 'application/json' }
-                        });
-                        const data = await res.json();
-                        return data.token;
-                      } catch (err) {
-                        console.error('刷新Token失败：', err);
-                        // 兜底返回原Token（或提示用户刷新页面）
-                        return token;
-                      }
-                    }
-                  }
-                });
-              })();
-            </script>
             
             <!-- 浏览中心 -->
             <div id="browse-center">
-                <h2>浏览中心</h2>
+                <h2>📝 帖子列表</h2>
                 <div id="posts-container"></div>
             </div>
             
             <!-- 发布中心 -->
             <div id="post-center" class="hidden">
-                <h2>发布中心</h2>
+                <h2>📌 发布新帖子</h2>
                 <div class="post-form">
-                    <textarea id="post-content" placeholder="请输入您的帖子内容"></textarea>
-                    <br>
-                    <button onclick="createPost()">发布帖子</button>
+                    <textarea id="post-content" placeholder="分享你的想法、问题或经验..."></textarea>
+                    <button onclick="createPost()" style="margin-top: 10px;">发布帖子</button>
                 </div>
+            </div>
+            
+            <!-- 修改密码 -->
+            <div id="change-password-section" class="hidden">
+                <h2>🔐 修改密码</h2>
+                <div class="post-form">
+                    <div class="form-group">
+                        <label for="old-password">当前密码</label>
+                        <input type="password" id="old-password" placeholder="请输入当前密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">新密码</label>
+                        <input type="password" id="new-password" placeholder="请输入新密码（至少6位）">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">确认新密码</label>
+                        <input type="password" id="confirm-password" placeholder="请再次输入新密码">
+                    </div>
+                    <button onclick="changePassword()" class="success">确认修改</button>
+                    <button onclick="hideChangePassword()" style="background-color:#9e9e9e;">取消</button>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div id="user-management" class="hidden">
+                <h2>👥 用户管理</h2>
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <span class="stat-label">总用户数:</span>
+                        <span class="stat-value" id="total-users">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">已封禁:</span>
+                        <span class="stat-value" id="banned-users">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">管理员:</span>
+                        <span class="stat-value" id="admin-users">0</span>
+                    </div>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" id="search-user" placeholder="输入用户名搜索">
+                    <button onclick="searchUsers()" class="info">搜索</button>
+                    <button onclick="resetSearch()" style="background-color:#666;">重置</button>
+                    <button onclick="loadUsers()" class="info">刷新</button>
+                </div>
+                
+                <div id="users-list" style="overflow-x:auto;"></div>
+            </div>
+            
+            <!-- 用户详情 -->
+            <div id="user-detail" class="hidden">
+                <h2 id="detail-username"></h2>
+                <button onclick="hideUserDetail()" class="info" style="margin-bottom: 20px;">← 返回列表</button>
+                <div id="user-posts-list"></div>
             </div>
         </div>
     </div>
     
     <script>
-        // 初始化本地存储
-        function initLocalStorage() {
-            if (!localStorage.getItem('posts')) {
-                localStorage.setItem('posts', JSON.stringify([]));
-            }
-            if (!localStorage.getItem('users')) {
-                // 初始化默认测试账号
-                localStorage.setItem('users', JSON.stringify([{username: '123456', password: '123456'}]));
-            }
-        }
+        // 全局变量
+        let currentUser = null;
+        let isAdmin = false;
+        let allUsersData = [];
+
+        // ==================== 界面切换 ====================
         
-        // 显示登录表单
         function showLoginForm() {
             document.getElementById('login-form-content').classList.remove('hidden');
             document.getElementById('register-form-content').classList.add('hidden');
+            document.getElementById('login-tab').classList.add('active');
+            document.getElementById('register-tab').classList.remove('active');
         }
         
-        // 显示注册表单
         function showRegisterForm() {
             document.getElementById('login-form-content').classList.add('hidden');
             document.getElementById('register-form-content').classList.remove('hidden');
+            document.getElementById('register-tab').classList.add('active');
+            document.getElementById('login-tab').classList.remove('active');
         }
         
-        // 显示浏览中心
         function showBrowseCenter() {
             document.getElementById('browse-center').classList.remove('hidden');
             document.getElementById('post-center').classList.add('hidden');
+            document.getElementById('change-password-section').classList.add('hidden');
+            document.getElementById('user-management').classList.add('hidden');
+            document.getElementById('user-detail').classList.add('hidden');
+            
+            document.getElementById('browse-tab').classList.add('active');
+            document.getElementById('post-tab').classList.remove('active');
+            document.getElementById('password-tab').classList.remove('active');
+            document.getElementById('user-management-tab').classList.remove('active');
+            
+            loadPosts();
         }
         
-        // 显示发布中心
         function showPostCenter() {
             document.getElementById('browse-center').classList.add('hidden');
             document.getElementById('post-center').classList.remove('hidden');
+            document.getElementById('change-password-section').classList.add('hidden');
+            document.getElementById('user-management').classList.add('hidden');
+            document.getElementById('user-detail').classList.add('hidden');
+            
+            document.getElementById('post-tab').classList.add('active');
+            document.getElementById('browse-tab').classList.remove('active');
+            document.getElementById('password-tab').classList.remove('active');
+            document.getElementById('user-management-tab').classList.remove('active');
         }
         
-        let currentUser = null;
+        function showChangePassword() {
+            document.getElementById('browse-center').classList.add('hidden');
+            document.getElementById('post-center').classList.add('hidden');
+            document.getElementById('change-password-section').classList.remove('hidden');
+            document.getElementById('user-management').classList.add('hidden');
+            document.getElementById('user-detail').classList.add('hidden');
+            
+            document.getElementById('password-tab').classList.add('active');
+            document.getElementById('browse-tab').classList.remove('active');
+            document.getElementById('post-tab').classList.remove('active');
+            document.getElementById('user-management-tab').classList.remove('active');
+        }
         
-        // 登录功能
-        function login() {
-            const username = document.getElementById('login-username').value;
+        function hideChangePassword() {
+            showBrowseCenter();
+        }
+        
+        function showUserManagement() {
+            if (!isAdmin) return;
+            
+            document.getElementById('browse-center').classList.add('hidden');
+            document.getElementById('post-center').classList.add('hidden');
+            document.getElementById('change-password-section').classList.add('hidden');
+            document.getElementById('user-management').classList.remove('hidden');
+            document.getElementById('user-detail').classList.add('hidden');
+            
+            document.getElementById('user-management-tab').classList.add('active');
+            document.getElementById('browse-tab').classList.remove('active');
+            document.getElementById('post-tab').classList.remove('active');
+            document.getElementById('password-tab').classList.remove('active');
+            
+            loadUsers();
+        }
+        
+        async function showUserDetail(username) {
+            if (!isAdmin) return;
+            
+            document.getElementById('user-management').classList.add('hidden');
+            document.getElementById('user-detail').classList.remove('hidden');
+            document.getElementById('detail-username').innerHTML = `📋 ${username} 的帖子`;
+            
+            await loadUserDetail(username);
+        }
+        
+        function hideUserDetail() {
+            document.getElementById('user-detail').classList.add('hidden');
+            document.getElementById('user-management').classList.remove('hidden');
+            loadUsers();
+        }
+
+        // ==================== 登录/注册 ====================
+        
+        async function login() {
+            const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value;
             const message = document.getElementById('login-message');
             
-            // 获取用户数据
-            const users = JSON.parse(localStorage.getItem('users'));
+            if (!username || !password) {
+                showMessage(message, '请输入用户名和密码', 'error');
+                return;
+            }
             
-            // 验证用户
-            const user = users.find(u => u.username === username && u.password === password);
-            
-            if (user) {
-                currentUser = user.username;
-                message.textContent = '登录成功！';
-                message.className = 'message success';
-                message.classList.remove('hidden');
+            try {
+                const response = await fetch('http://106.54.7.163:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
                 
-                // 显示发帖区域，隐藏登录区域
-                document.getElementById('login-section').classList.add('hidden');
-                document.getElementById('post-section').classList.remove('hidden');
+                const data = await response.json();
                 
-                // 加载帖子
-                loadPosts();
-            } else {
-                message.textContent = '用户名或密码错误！';
-                message.className = 'message error';
-                message.classList.remove('hidden');
+                if (data.success) {
+                    currentUser = data.username;
+                    isAdmin = data.isAdmin || false;
+                    
+                    document.getElementById('login-section').classList.add('hidden');
+                    document.getElementById('post-section').classList.remove('hidden');
+                    document.getElementById('welcome-user').innerHTML = `👋 欢迎, <strong>${currentUser}</strong>`;
+                    
+                    if (isAdmin) {
+                        document.getElementById('user-management-tab').classList.remove('hidden');
+                    } else {
+                        document.getElementById('user-management-tab').classList.add('hidden');
+                    }
+                    
+                    showBrowseCenter();
+                } else {
+                    showMessage(message, data.message || '登录失败', 'error');
+                }
+            } catch (error) {
+                showMessage(message, '网络错误，请稍后重试', 'error');
             }
         }
         
-        // 注册功能
-        function register() {
-            const username = document.getElementById('register-username').value;
+        async function register() {
+            const username = document.getElementById('register-username').value.trim();
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm-password').value;
             const message = document.getElementById('register-message');
             
-            // 验证输入
             if (!username || !password) {
-                message.textContent = '用户名和密码不能为空！';
-                message.className = 'message error';
-                message.classList.remove('hidden');
+                showMessage(message, '用户名和密码不能为空', 'error');
                 return;
             }
             
             if (password !== confirmPassword) {
-                message.textContent = '两次输入的密码不一致！';
-                message.className = 'message error';
-                message.classList.remove('hidden');
+                showMessage(message, '两次输入的密码不一致', 'error');
                 return;
             }
             
-            // 获取用户数据
-            const users = JSON.parse(localStorage.getItem('users'));
-            
-            // 检查用户名是否已存在
-            if (users.some(u => u.username === username)) {
-                message.textContent = '用户名已存在！';
-                message.className = 'message error';
-                message.classList.remove('hidden');
+            if (password.length < 6) {
+                showMessage(message, '密码长度不能少于6位', 'error');
                 return;
             }
             
-            // 添加新用户
-            users.push({username, password});
-            localStorage.setItem('users', JSON.stringify(users));
-            
-            message.textContent = '注册成功！请登录';
-            message.className = 'message success';
-            message.classList.remove('hidden');
-            
-            // 切换到登录表单
-            setTimeout(showLoginForm, 1500);
-        }
-        
-        // 创建帖子
-        function createPost() {
-            const content = document.getElementById('post-content').value;
-            
-            if (content.trim() === '') {
-                alert('请输入帖子内容！');
-                return;
+            try {
+                const response = await fetch('http://106.54.7.163:3000/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage(message, '注册成功！请登录', 'success');
+                    document.getElementById('register-username').value = '';
+                    document.getElementById('register-password').value = '';
+                    document.getElementById('register-confirm-password').value = '';
+                    setTimeout(showLoginForm, 1500);
+                } else {
+                    showMessage(message, data.message || '注册失败', 'error');
+                }
+            } catch (error) {
+                showMessage(message, '网络错误，请稍后重试', 'error');
             }
-            
-            // 获取现有帖子
-            const posts = JSON.parse(localStorage.getItem('posts'));
-            
-            // 创建新帖子
-            const newPost = {
-                id: Date.now(),
-                author: currentUser,
-                content: content,
-                time: new Date().toLocaleString()
-            };
-            
-            // 添加到帖子列表
-            posts.unshift(newPost);
-            
-            // 保存到本地存储
-            localStorage.setItem('posts', JSON.stringify(posts));
-            
-            // 清空输入框
-            document.getElementById('post-content').value = '';
-            
-            // 重新加载帖子
-            loadPosts();
-            
-            // 切换回浏览中心
-            showBrowseCenter();
         }
         
-        // 加载帖子
-        function loadPosts() {
-            const posts = JSON.parse(localStorage.getItem('posts'));
-            const container = document.getElementById('posts-container');
-            
-            // 清空容器
-            container.innerHTML = '';
-            
-            // 渲染帖子
-            posts.forEach(post => {
-                const postElement = document.createElement('div');
-                postElement.className = 'post';
-                postElement.innerHTML = `
-                    <div class="post-header">
-                        <span class="post-id">ID: ${post.id}</span>
-                        <span class="post-author">用户: ${post.author}</span>
-                        <span class="post-time">${post.time}</span>
-                    </div>
-                    <div class="post-content">${post.content}</div>
-                `;
-                container.appendChild(postElement);
-            });
-        }
-        
-        // 退出登录
         function logout() {
             currentUser = null;
-            // 显示登录区域，隐藏发帖区域
+            isAdmin = false;
+            allUsersData = [];
+            
             document.getElementById('login-section').classList.remove('hidden');
             document.getElementById('post-section').classList.add('hidden');
             
-            // 清空登录表单
             document.getElementById('login-username').value = '';
             document.getElementById('login-password').value = '';
             document.getElementById('login-message').classList.add('hidden');
+            document.getElementById('user-management-tab').classList.add('hidden');
+        }
+
+        // ==================== 帖子功能 ====================
+        
+        async function loadPosts() {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = '<p style="text-align:center; color:#666;">加载中...</p>';
+            
+            try {
+                const response = await fetch('http://106.54.7.163:3000/api/posts');
+                const posts = await response.json();
+                
+                if (posts.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#666;">暂无帖子，快来发布第一个帖子吧！</p>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post';
+                    
+                    let adminActions = '';
+                    if (isAdmin) {
+                        adminActions = `
+                            <div class="post-actions">
+                                <button onclick="deletePost(${post.id})" class="danger">删除帖子</button>
+                            </div>
+                        `;
+                    }
+                    
+                    postElement.innerHTML = `
+                        <div class="post-header">
+                            <span class="post-author">👤 ${post.author}</span>
+                            <span class="post-time">🕒 ${post.time}</span>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        ${adminActions}
+                    `;
+                    container.appendChild(postElement);
+                });
+            } catch (error) {
+                container.innerHTML = '<p style="text-align:center; color:red;">加载失败，请刷新重试</p>';
+            }
         }
         
-        // 页面加载时初始化
-        window.onload = function() {
-            initLocalStorage();
-        };
+        async function createPost() {
+            const content = document.getElementById('post-content').value.trim();
+            
+            if (!content) {
+                alert('请输入帖子内容');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://106.54.7.163:3000/api/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ author: currentUser, content })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('post-content').value = '';
+                    alert('发布成功！');
+                    showBrowseCenter();
+                } else {
+                    const data = await response.json();
+                    alert(data.message || '发布失败');
+                }
+            } catch (error) {
+                alert('发布失败，请稍后重试');
+            }
+        }
+        
+        async function deletePost(postId) {
+            if (!isAdmin || !confirm('确定要删除这个帖子吗？')) return;
+            
+            try {
+                const response = await fetch(`http://106.54.7.163:3000/api/posts/${postId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adminUsername: currentUser })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('删除成功');
+                    
+                    if (!document.getElementById('user-detail').classList.contains('hidden')) {
+                        const username = document.getElementById('detail-username').innerHTML.replace('📋 ', '').replace(' 的帖子', '');
+                        loadUserDetail(username);
+                    } else {
+                        loadPosts();
+                    }
+                } else {
+                    alert(data.message || '删除失败');
+                }
+            } catch (error) {
+                alert('删除失败，请稍后重试');
+            }
+        }
+
+        // ==================== 密码修改 ====================
+        
+        async function changePassword() {
+            const oldPassword = document.getElementById('old-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                alert('请填写所有字段');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('新密码和确认密码不一致');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('新密码不能少于6位');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://106.54.7.163:3000/api/user/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: currentUser,
+                        oldPassword,
+                        newPassword
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('密码修改成功，请重新登录');
+                    logout();
+                } else {
+                    alert(data.message || '修改失败');
+                }
+            } catch (error) {
+                alert('修改失败，请稍后重试');
+            }
+        }
+
+        // ==================== 管理员功能 ====================
+        
+        async function banUser(username) {
+            if (!isAdmin || !confirm(`确定要封禁用户 ${username} 吗？`)) return;
+            
+            try {
+                const response = await fetch('http://106.54.7.163:3000/api/users/ban', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        adminUsername: currentUser,
+                        targetUsername: username
+                    })
+                });
+                
+                const data = await response.json();
+                alert(data.message);
+                if (data.success) loadUsers();
+            } catch (error) {
+                alert('操作失败，请稍后重试');
+            }
+        }
+        
+        async function unbanUser(username) {
+            if (!isAdmin || !confirm(`确定要解除封禁用户 ${username} 吗？`)) return;
+            
+            try {
+                const response = await fetch('http://106.54.7.163:3000/api/users/unban', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        adminUsername: currentUser,
+                        targetUsername: username
+                    })
+                });
+                
+                const data = await response.json();
+                alert(data.message);
+                if (data.success) loadUsers();
+            } catch (error) {
+                alert('操作失败，请稍后重试');
+            }
+        }
+        
+        async function getUsers() {
+            try {
+                const response = await fetch(`http://106.54.7.163:3000/api/admin/users?adminUsername=${currentUser}`);
+                return await response.json();
+            } catch (error) {
+                return [];
+            }
+        }
+        
+        async function loadUsers() {
+            const container = document.getElementById('users-list');
+            container.innerHTML = '<p>加载中...</p>';
+            
+            try {
+                const users = await getUsers();
+                allUsersData = users;
+                renderUsersList(users);
+                
+                // 更新统计
+                document.getElementById('total-users').textContent = users.length;
+                document.getElementById('banned-users').textContent = users.filter(u => u.isBanned).length;
+                document.getElementById('admin-users').textContent = users.filter(u => u.isAdmin).length;
+            } catch (error) {
+                container.innerHTML = '<p>加载失败</p>';
+            }
+        }
+        
+        function renderUsersList(users) {
+            const container = document.getElementById('users-list');
+            
+            if (!users || users.length === 0) {
+                container.innerHTML = '<p>暂无用户</p>';
+                return;
+            }
+            
+            let html = '<table><tr><th>用户名</th><th>注册时间</th><th>状态</th><th>帖子数</th><th>操作</th></tr>';
+            
+            users.forEach(user => {
+                let statusHtml = '';
+                if (user.isAdmin) {
+                    statusHtml = '<span class="status-badge status-admin">管理员</span>';
+                } else if (user.isBanned) {
+                    statusHtml = '<span class="status-badge status-banned">已封禁</span>';
+                } else {
+                    statusHtml = '<span class="status-badge status-normal">正常</span>';
+                }
+                
+                html += '<tr>';
+                html += `<td><strong>${user.username}</strong></td>`;
+                html += `<td>${user.created_at ? user.created_at.substring(0, 16) : '未知'}</td>`;
+                html += `<td>${statusHtml}</td>`;
+                html += `<td>${user.posts ? user.posts.length : 0}</td>`;
+                html += '<td class="action-buttons">';
+                html += `<button onclick="showUserDetail('${user.username}')" class="info">查看</button>`;
+                
+                if (user.username !== currentUser && !user.isAdmin) {
+                    if (user.isBanned) {
+                        html += `<button onclick="unbanUser('${user.username}')" class="success">解封</button>`;
+                    } else {
+                        html += `<button onclick="banUser('${user.username}')" class="danger">封禁</button>`;
+                    }
+                }
+                
+                html += '</td></tr>';
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+        
+        function searchUsers() {
+            const term = document.getElementById('search-user').value.trim().toLowerCase();
+            if (!term) {
+                renderUsersList(allUsersData);
+                return;
+            }
+            const filtered = allUsersData.filter(u => u.username.toLowerCase().includes(term));
+            renderUsersList(filtered);
+        }
+        
+        function resetSearch() {
+            document.getElementById('search-user').value = '';
+            renderUsersList(allUsersData);
+        }
+        
+        async function getUserDetail(username) {
+            try {
+                const response = await fetch(`http://106.54.7.163:3000/api/admin/users/${username}?adminUsername=${currentUser}`);
+                return await response.json();
+            } catch (error) {
+                return null;
+            }
+        }
+        
+        async function loadUserDetail(username) {
+            const container = document.getElementById('user-posts-list');
+            container.innerHTML = '<p>加载中...</p>';
+            
+            try {
+                const user = await getUserDetail(username);
+                
+                if (!user || !user.posts || user.posts.length === 0) {
+                    container.innerHTML = '<p style="text-align:center;">该用户暂无帖子</p>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                user.posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post';
+                    postElement.innerHTML = `
+                        <div class="post-header">
+                            <span class="post-time">${post.time}</span>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        <button onclick="deletePost(${post.id})" class="danger" style="margin-top:10px;">删除</button>
+                    `;
+                    container.appendChild(postElement);
+                });
+            } catch (error) {
+                container.innerHTML = '<p>加载失败</p>';
+            }
+        }
+
+        // ==================== 工具函数 ====================
+        
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = `message ${type}`;
+            element.classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
