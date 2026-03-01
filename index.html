@@ -226,97 +226,54 @@
             <!-- Coze聊天功能 -->
             <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.19/libs/cn/index.js"></script>
             <script>
-              new CozeWebSDK.WebChatClient({
-                /**
-                * Agent or app settings
-                * for agent
-                * @param config.bot_id - Agent ID.
-                * for app
-                * @param config.type - To integrate a Coze app, you must set the value to app.
-                * @param config.isIframe - Whether to use the iframe method to open the chat box
-                * @param config.appInfo.appId - AI app ID.
-                * @param config.appInfo.workflowId - Workflow or chatflow ID.
-                */
-                config: {
-                  type: 'bot',
-                  bot_id: '7602506639781920794',
-                  isIframe: false,
-                },
-                /**
-                * The auth property is used to configure the authentication method.
-                * @param type - Authentication method, default type is 'unauth', which means no authentication is required; it is recommended to set it to 'token', which means authentication is done through PAT (Personal Access Token) or OAuth.
-                * @param token - When the type is set to 'token', you need to configure the PAT (Personal Access Token) or OAuth access key.
-                * @param onRefreshToken - When the access key expires, a new key can be set as needed.
-                */
-                auth: {
-                  type: 'token',
-                  token: 'cztei_lVc6v94xik8Xu65NWZQLOFydI794h8Ol4zUJI7aS0Ke5WNAnWffhj4YxZV8KeCn9l',
-                  onRefreshToken: async () => 'token'
-                },
-                /**
-                * The userInfo parameter is used to set the display of agent user information in the chat box.
-                * @param userInfo.id - ID of the agent user.
-                * @param userInfo.url - URL address of the user's avatar.
-                * @param userInfo.nickname - Nickname of the agent user.
-                */
-                userInfo: {
-                  id: 'user',
-                  url: 'https://lf-coze-web-cdn.coze.cn/obj/eden-cn/lm-lgvj/ljhwZthlaukjlkulzlp/coze/coze-logo.png',
-                  nickname: 'User',
-                },
-                ui: {
-                  /**
-                  * The ui.base parameter is used to add the overall UI effect of the chat window.
-                  * @param base.icon - Application icon URL.
-                  * @param base.layout - Layout style of the agent chat box window, which can be set as 'pc' or'mobile'.
-                  * @param base.lang - System language of the agent, which can be set as 'en' or 'zh-CN'.
-                  * @param base.zIndex - The z-index of the chat box.
-                  */
-                  base: {
-                    icon: 'https://lf-coze-web-cdn.coze.cn/obj/eden-cn/lm-lgvj/ljhwZthlaukjlkulzlp/coze/chatsdk-logo.png',
-                    layout: 'pc',
-                    lang: 'en',
-                    zIndex: 1000
+              // 封装获取Token的函数（调用后端接口）
+              async function getCozeToken() {
+                try {
+                  const res = await fetch('/api/get-coze-token', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                  });
+                  const data = await res.json();
+                  // 后端接口需返回格式：{ "token": "你的PAT令牌" }
+                  return data.token;
+                } catch (err) {
+                  console.error('获取初始Token失败：', err);
+                  // 兜底：测试阶段可临时返回你的令牌，上线后删除
+                  return 'pat_IROuxCbkTLqmWx4M5pS4FI1PoK53Aqd1Ji5FP1PbBk51fAD3VhxAkJlVHkWvCcqS';
+                }
+              }
+              
+              // 初始化SDK（需异步获取Token）
+              (async function() {
+                const token = await getCozeToken();
+                new CozeWebSDK.WebChatClient({
+                  config: {
+                    bot_id: '7602506639781920794',
                   },
-                  /**
-                  * Controls whether to display the top title bar and the close button
-                  * @param header.isShow - Whether to display the top title bar.
-                  * @param header.isNeedClose - Whether to display the close button.
-                  */
-                  header: {
-                    isShow: true,
-                    isNeedClose: true,
+                  componentProps: {
+                    title: 'Coze',
                   },
-                  /**
-                  * Controls whether to display the floating ball at the bottom right corner of the page.
-                  */
-                  asstBtn: {
-                    isNeed: true
-                  },
-                  /**
-                  * The ui.footer parameter is used to add the footer of the chat window.
-                  * @param footer.isShow - Whether to display the bottom copy module.
-                  * @param footer.expressionText - The text information displayed at the bottom.
-                  * @param footer.linkvars - The link copy and link address in the footer.
-                  */
-                  footer: {
-                    isShow: true,
-                    expressionText: 'Powered by ...',
-                  },
-                  /**
-                  * Control the UI and basic capabilities of the chat box.
-                  * @param chatBot.title - The title of the chatbox
-                  * @param chatBot.uploadable - Whether file uploading is supported.
-                  * @param chatBot.width - The width of the agent window on PC is measured in px, default is 460.
-                  * @param chatBot.el - Container for setting the placement of the chat box (Element).
-                  */
-                  chatBot: {
-                    title: 'Coze Bot',
-                    uploadable: true,
-                    width: 390,
-                  },
-                },
-              });
+                  auth: {
+                    type: 'token',
+                    token: token,
+                    onRefreshToken: async function () {
+                      try {
+                        // 调用后端刷新Token的接口
+                        const res = await fetch('/api/refresh-coze-token', {
+                          method: 'GET',
+                          headers: { 'Content-Type': 'application/json' }
+                        });
+                        const data = await res.json();
+                        return data.token;
+                      } catch (err) {
+                        console.error('刷新Token失败：', err);
+                        // 兜底返回原Token（或提示用户刷新页面）
+                        return token;
+                      }
+                    }
+                  }
+                });
+              })();
             </script>
             
             <!-- 浏览中心 -->
