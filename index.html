@@ -499,8 +499,8 @@
     
     <script>
         // ==================== 配置 ====================
-        // 使用 CORS 代理解决 HTTPS 访问 HTTP 的问题
-        const API_BASE = 'https://cors-anywhere.herokuapp.com/http://106.54.7.163:3000';
+        // 使用自建的私有 CORS 代理
+        const API_BASE = 'http://106.54.7.163:8080/http://106.54.7.163:3000';
         
         // 全局变量
         let currentUser = null;
@@ -641,7 +641,8 @@
                     showMessage(message, data.message || '登录失败', 'error');
                 }
             } catch (error) {
-                showMessage(message, '网络错误，请稍后重试。如果是首次使用，请先访问 https://cors-anywhere.herokuapp.com 激活代理', 'error');
+                console.error('登录错误:', error);
+                showMessage(message, '网络错误，请稍后重试。', 'error');
             }
         }
         
