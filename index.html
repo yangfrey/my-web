@@ -109,10 +109,6 @@
             background-color: #4CAF50;
         }
         
-        button.warning {
-            background-color: #ff9800;
-        }
-        
         button.info {
             background-color: #2196F3;
         }
@@ -168,11 +164,6 @@
             flex-wrap: wrap;
             padding-bottom: 8px;
             border-bottom: 1px solid #eee;
-        }
-        
-        .post-id {
-            font-size: 12px;
-            color: #999;
         }
         
         .post-author {
@@ -498,8 +489,7 @@
     </div>
     
     <script>
-        // ==================== 配置 ====================
-        // 使用自建的私有 CORS 代理
+        // API基础地址配置 - 使用CORS代理解决HTTPS页面访问HTTP API的问题
         const API_BASE = 'http://106.54.7.163:8080/http://106.54.7.163:3000';
         
         // 全局变量
@@ -641,8 +631,7 @@
                     showMessage(message, data.message || '登录失败', 'error');
                 }
             } catch (error) {
-                console.error('登录错误:', error);
-                showMessage(message, '网络错误，请稍后重试。', 'error');
+                showMessage(message, '网络错误，请稍后重试', 'error');
             }
         }
         
@@ -913,6 +902,7 @@
                 allUsersData = users;
                 renderUsersList(users);
                 
+                // 更新统计
                 document.getElementById('total-users').textContent = users.length;
                 document.getElementById('banned-users').textContent = users.filter(u => u.isBanned).length;
                 document.getElementById('admin-users').textContent = users.filter(u => u.isAdmin).length;
