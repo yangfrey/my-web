@@ -499,7 +499,7 @@
     
     <script>
         // ==================== 配置 ====================
-        // 使用自建的私有 CORS 代理
+        // 使用自建的私有 CORS 代理 - 已测试可用
         const API_BASE = 'http://106.54.7.163:8080/http://106.54.7.163:3000';
         
         // 全局变量
@@ -913,7 +913,6 @@
                 allUsersData = users;
                 renderUsersList(users);
                 
-                // 更新统计
                 document.getElementById('total-users').textContent = users.length;
                 document.getElementById('banned-users').textContent = users.filter(u => u.isBanned).length;
                 document.getElementById('admin-users').textContent = users.filter(u => u.isAdmin).length;
